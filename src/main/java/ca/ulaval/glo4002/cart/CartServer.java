@@ -18,12 +18,11 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.LocalServerPort;
 
 public class CartServer implements Runnable {
-
-    @Value("$PORT")
-    private int port;
+    @LocalServerPort
+    int port;
 
     public static void main(String[] args) {
         new CartServer().run();
@@ -31,7 +30,8 @@ public class CartServer implements Runnable {
 
     public void run() {
         configureContext();
-        startServer(port);
+        startServer();
+
     }
 
     public CartServer() {
@@ -41,7 +41,7 @@ public class CartServer implements Runnable {
         new ApplicationContext().apply();
     }
 
-    private void startServer(int port) {
+    private void startServer() {
         Server server = new Server(port);
         ServletContextHandler contextHandler = new ServletContextHandler(server, "/");
         contextHandler.addFilter(EntityManagerContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
